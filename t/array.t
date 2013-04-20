@@ -45,6 +45,9 @@ $v = $ar->shift();
 ok($v == 27, "shift 1");
 ok($ar->get(0) == 3, "shift 2");
 
-
+$ar=Array->new($ar);
+ok($ar->get(0) == 3, "init with Array");
+$ar=Array->new(3);
+ok($ar->get(0) == 3,"int with one value");
 
 done_testing;

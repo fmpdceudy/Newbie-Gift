@@ -1,9 +1,24 @@
+use v5.10;
 use NG;
 def_class Array => Object => ['data'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
-        $self->data = $args;
+        my @tmp = ();
+        given ( ref $args ) {
+            when ( '' ) {
+                @tmp = ( $args );
+            }
+            when ( 'Array' ) {
+                @tmp = ( @{ $args->data } );
+            }
+            when ( 'ARRAY' ) {
+                @tmp = ( @$args );
+            }
+            default {
+            }
+        };
+        $self->data = \@tmp;
     },
 
     each => sub {
@@ -49,7 +64,12 @@ def_class Array => Object => ['data'] => {
 
     sort => sub {
         my ( $self, $sub ) = @_;
-        my @tmp = sort { $sub->( $a, $b ) } @{ $self->data };
+        my @tmp;
+        if ( defined $sub ) {
+            @tmp = sort { $sub->( $a, $b ) } @{ $self->data };
+        } else {
+            @tmp = sort @{ $self->data };
+        }
         $self->data = \@tmp;
         return $self;
     },

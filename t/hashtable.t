@@ -29,3 +29,12 @@ $hash->each(
 );
 
 cmp_deeply $hash->values, Array->new( 3, 4 );
+
+$inithash = new Hashtable( $hash );
+cmp_deeply $inithash->values, Array->new( 3, 4 );
+
+$inithash = new Hashtable( { 'key2', 3, 'key3', 4 } );
+cmp_deeply $inithash->values, Array->new( 3, 4 );
+
+$inithash = new Hashtable( new Array( 'key2', 3, 'key3', 4 ) );
+cmp_deeply $inithash->values, Array->new( 3, 4 );

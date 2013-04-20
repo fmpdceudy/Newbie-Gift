@@ -1,10 +1,28 @@
+use v5.10;
 use NG;
 use Array;
 
 def_class Hashtable => Object => ['data'] => {
     build => sub {
         my ( $self, $args ) = @_;
-        $self->data = {@$args};
+        my %tmp = ();
+        given ( ref $args ) {
+            when ( 'ARRAY' ) {
+                %tmp = ( @$args );
+            }
+            when ( 'Array' ) {
+                %tmp = ( @{ $args->data} );
+            }
+            when ( 'Hashtable' ) {
+                %tmp = %{ $args->data };
+            }
+            when ( 'HASH' ) {
+                %tmp = %$args;
+            }
+            default {
+            }
+        };
+        $self->data = \%tmp;
     },
     put => sub {
         my ( $self, $key, $val ) = @_;
