@@ -1,21 +1,17 @@
 use v5.10;
 use NG;
+
 def_class Array => Object => ['data'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
         my @tmp = ();
         given ( ref $args ) {
-            when ( '' ) {
-                @tmp = ( $args );
-            }
-            when ( 'Array' ) {
-                @tmp = ( @{ $args->data } );
-            }
             when ( 'ARRAY' ) {
                 @tmp = ( @$args );
             }
             default {
+                @tmp = ( $args );
             }
         };
         $self->data = \@tmp;
