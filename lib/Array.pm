@@ -17,6 +17,18 @@ def_class Array => Object => ['data'] => {
         $self->data = \@tmp;
     },
 
+    read => sub {
+        my ( $class, $filepath ) =@_;
+        open my $fh, '<', $filepath or return new Array;
+        my $content = new Array;
+        while ( <$fh> ) {
+            chomp;
+            $content->push( $_ );
+        }
+        close $fh;
+        return $content;
+    },
+
     each => sub {
         my ( $self, $sub ) = @_;
         for my $i ( 0 .. scalar( @{ $self->data } ) - 1 ) {

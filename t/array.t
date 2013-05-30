@@ -50,4 +50,10 @@ ok($ar->get(0)->get(0) == 3, "init with Array");
 $ar=Array->new(3);
 ok($ar->get(0) == 3,"int with one value");
 
+$file=Array->read("./test");
+ok($file->get(0) == 0, "read file 0");
+ok($file->get(1) == 1, "read file 1");
+ok($file->get(2) == 2, "read file 2");
+ok($file->get(3) == 3, "read file 3");
+
 done_testing;
