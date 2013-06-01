@@ -18,15 +18,21 @@ def_class Array => Object => ['data'] => {
     },
 
     read => sub {
-        my ( $class, $filepath ) =@_;
-        open my $fh, '<', $filepath or return new Array;
-        my $content = new Array;
+        my ( $self, $filepath ) =@_;
+        if ( ref( $self ) eq 'Array' ) {
+            for  ( 0 .. $self->size - 1 ) {
+                $self->pop;
+            }
+        } else {
+            $self = new Array;
+        }
+        open my $fh, '<', $filepath or return $self;
         while ( <$fh> ) {
             chomp;
-            $content->push( $_ );
+            $self->push( $_ );
         }
         close $fh;
-        return $content;
+        return $self;
     },
 
     each => sub {
