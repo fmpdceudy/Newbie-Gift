@@ -1,44 +1,58 @@
-package Excel::Sheet;
-use strict;
-use warnings;
+use NG;
 use Array;
-use Excel::Cell;
-use base qw(Object);
+use Hashtable;
 
-sub new {
-    my ( $pkg, @config ) = @_;
-    my $sheet = {
-        name      => 'no name',
-        cells     => Array->new( Array->new ),
-        row_count => 0,
-        col_count => 0,
-        @config,
-    };
-    return bless $sheet, $pkg;
-}
+def_class "Excel::Sheet" => Object => ['named', 'cells', 'row_count', 'col_count'] => {
 
-sub row_count { return shift->{row_count}; }
+    build => sub {
+        my ( $self, $args ) = @_;
+        my $config = new Hashtable($args);
+        $self->named = $config->get('name') || 'no name';
+        $self->cells = $config->get('cells') || Array->new;
+        $self->row_count = $config->get('row_count') || 0;
+        $self->col_count = $config->get('col_count') || 0;
+    },
 
-sub col_count { return shift->{col_count}; }
+    name => sub {
+        my ( $self, $new_val ) = @_;
+        if ( defined $new_val ) {
+            $self->named = $new_val;
+            return $self;
+        } else {
+            return $self->named;
+        }
+    },
 
-sub name {
-    my ( $self, $new_val ) = @_;
-    if ( defined $new_val ) {
-        $self->{name} = $new_val;
-        return $self;
-    }
-    else {
-        return $self->{name};
-    }
-}
+    set => sub {
+        my ( $self, $row, $col, $cell ) = @_;
+        if ( $col =~ /^[A-Za-z]+$/ ) {
+            $col = _letter_to_num($col);
+        }
+        $self->row_count = $row if $row > $row_count;
+        $self->col_count = $col if $col > $col_count;
+        if ( ! $self->cells->get( $row-1 )) {
+            $self->cells->set( $row-1, Array->new);
+        }
+        $self->cells->get( $row-1 )->set( $col-1, $cell );
+        $self;
+    },
 
-sub get {
-    my ( $self, $row, $col ) = @_;
-    if ( $col =~ /^[A-Za-z]+$/ ) {
-        $col = _letter_to_num($col);
-    }
-    return $self->{cells}->[$row-1][$col-1];
-}
+    get => sub {
+        my ( $self, $row, $col ) = @_;
+        if ( $col =~ /^[A-Za-z]+$/ ) {
+            $col = _letter_to_num($col);
+        }
+        $self->row_count = $row if $row > $row_count;
+        $self->col_count = $col if $col > $col_count;
+        if ( ! $self->cells->get( $row-1 )) {
+            $self->cells->set( $row-1, Array->new);
+        }
+        if ( ! $self->cells->get( $row-1 )->get( $col-1 )) {
+            $self->cells->get( $row-1 )->set( $col-1, new Excel::Cell );
+        }
+        return $self->cells->get($row-1)->get($col-1);
+    },
+};
 
 sub _letter_to_num {
     my $str     = shift;
@@ -46,8 +60,8 @@ sub _letter_to_num {
     my $res     = 0;
     for ( my $i = ( $letters->size ) - 1 ; $i >= 0 ; $i-- ) {
         $res +=
-          ( ( ord( $letters->[$i] ) - ord('A') + 1 ) *
-              ( 26**($letters->size - $i - 1 ) ) );
+        ( ( ord( $letters->get($i) ) - ord('A') + 1 ) *
+            ( 26**($letters->size - $i - 1 ) ) );
     }
     return $res;
 }
