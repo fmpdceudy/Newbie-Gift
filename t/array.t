@@ -1,9 +1,9 @@
+use strict;
+use warnings FATAL => 'all';
 use Test::More;
-use lib '../lib';
-use Array;
+use NG::Array;
 
-my $ar = Array->new(10, 3, 9, 7);
-
+my $ar = NG::Array->new(10, 3, 9, 7);
 
 ok($ar->get(0) == 10, "get");
 
@@ -11,7 +11,6 @@ $ar->sort(sub {
         my ($a, $b) = @_;
         return $a <=> $b;
     });
-
 ok($ar->get(0) == 3, "sort");
 
 my $sum = 0;
@@ -45,12 +44,12 @@ $v = $ar->shift();
 ok($v == 27, "shift 1");
 ok($ar->get(0) == 3, "shift 2");
 
-$ar=Array->new($ar);
-ok($ar->get(0)->get(0) == 3, "init with Array");
-$ar=Array->new(3);
+$ar=NG::Array->new($ar);
+ok($ar->get(0)->get(0) == 3, "init with NG::Array");
+$ar=NG::Array->new(3);
 ok($ar->get(0) == 3,"int with one value");
 
-$file=Array->read("./test");
+my $file=NG::Array->read("./t/test");
 ok($file->get(0) == 0, "read file 0");
 ok($file->get(1) == 1, "read file 1");
 ok($file->get(2) == 2, "read file 2");

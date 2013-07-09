@@ -1,8 +1,8 @@
 use v5.10;
 use NG;
-use Array;
+use NG::Array;
 
-def_class Hashtable => Object => ['data'] => {
+def_class 'NG::Hashtable' => 'NG::Object' => ['data'] => {
     build => sub {
         my ( $self, $args ) = @_;
         my %tmp = ();
@@ -10,10 +10,10 @@ def_class Hashtable => Object => ['data'] => {
             when ( 'ARRAY' ) {
                 %tmp = ( @$args );
             }
-            when ( 'Array' ) {
+            when ( 'NG::Array' ) {
                 %tmp = ( @{ $args->data} );
             }
-            when ( 'Hashtable' ) {
+            when ( 'NG::Hashtable' ) {
                 %tmp = %{ $args->data };
             }
             when ( 'HASH' ) {
@@ -36,12 +36,12 @@ def_class Hashtable => Object => ['data'] => {
     },
     keys => sub {
         my ($self) = @_;
-        return new Array( sort keys %{ $self->data } );
+        return new NG::Array( sort keys %{ $self->data } );
     },
 
     values => sub {
         my ($self) = @_;
-        return new Array( sort values %{ $self->data } );
+        return new NG::Array( sort values %{ $self->data } );
     },
     remove => sub {
         my ( $self, $key ) = @_;

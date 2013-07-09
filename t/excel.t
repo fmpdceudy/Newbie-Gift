@@ -1,15 +1,20 @@
 use strict;
-use warnings;
-
-use Excel;
-my $new = new Excel;
+use warnings FATAL => 'all';
+use Test::More;
+use NG::Excel;
+my $new = new NG::Excel;
 $new->sheet(1)->name("afirst");
+ok($new->sheet(1)->name eq "afirst");
 $new->sheet(1)->get(3,3)->value('ok');
 $new->save("a.xls");
 
-my $excel = new Excel("a.xls");
+my $excel = new NG::Excel("a.xls");
 $excel->sheet(1)->name('ddddd');
+ok( $excel->sheet(1)->name eq "ddddd");
 my $cell = $excel->sheet(1)->get( 2, 'B' )->value('ok')->border_left(2, 'solid', 0xff0000);
 $cell = $excel->sheet(1)->get(3, 'C')->border_bottom(2, 'double', 0xff0000)->width(100);
 $cell->value("3c");
 $excel->save("b.xls");
+unlink "a.xls";
+unlink "b.xls";
+done_testing;

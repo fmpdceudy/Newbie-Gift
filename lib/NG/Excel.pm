@@ -1,15 +1,15 @@
 use NG;
-use Array;
+use NG::Array;
 use Spreadsheet::WriteExcel;
 use Spreadsheet::ParseExcel;
-use Excel::Cell;
-use Excel::Sheet;
+use NG::Excel::Cell;
+use NG::Excel::Sheet;
 
-def_class Excel => Object => ['sheets'] =>{
+def_class 'NG::Excel' => 'NG::Object' => ['sheets'] =>{
 
     build => sub{
         my ( $self, $args ) = @_;
-        $self->sheets = Array->new;
+        $self->sheets = NG::Array->new;
         if ( ref( $args ) ne 'ARRAY' ) {
             $self->open( $args );
         }
@@ -25,7 +25,7 @@ def_class Excel => Object => ['sheets'] =>{
         for my $sheet ( $workbook->worksheets() ) {
             my ( $row_min, $row_max ) = $sheet->row_range();
             my ( $col_min, $col_max ) = $sheet->col_range();
-            my $ng_sheet = Excel::Sheet->new(
+            my $ng_sheet = NG::Excel::Sheet->new(
                 name      => $sheet->get_name(),
                 row_count => $row_max + 1,
                 col_count => $col_max + 1,
@@ -34,7 +34,7 @@ def_class Excel => Object => ['sheets'] =>{
                 for my $col ( $col_min .. $col_max ) {
                     my $cell = $sheet->get_cell( $row, $col );
                     next unless $cell;
-                    my $ng_cell = Excel::Cell->new( value => $cell->value(), );
+                    my $ng_cell = NG::Excel::Cell->new( value => $cell->value(), );
                     $ng_sheet->set( $row+1, $col+1, $ng_cell );
                 }
             }
@@ -45,7 +45,7 @@ def_class Excel => Object => ['sheets'] =>{
     sheet => sub {
         my ( $self, $sheet_num ) = @_;
         if( ! defined $self->sheets->get( $sheet_num -1 ) ) {
-            $self->sheets->set( $sheet_num - 1, new Excel::Sheet );
+            $self->sheets->set( $sheet_num - 1, new NG::Excel::Sheet );
         }
         return $self->sheets->get( $sheet_num-1 );
     },
@@ -71,14 +71,14 @@ def_class Excel => Object => ['sheets'] =>{
                             $workbook->set_custom_color( 40, '#' . uc( sprintf( "%.6x", $cell->border_bottom->get("color") )));
                             $workbook->set_custom_color( 41, '#' . uc( sprintf( "%.6x", $cell->border_left->get("color"))));
                             $format->set_bottom(
-                                Excel::Cell->english_to_num(
+                                NG::Excel::Cell->english_to_num(
                                     $cell->border_bottom->get("width"),
                                     $cell->border_bottom->get("style")
                                 )
                             );
                             $format->set_bottom_color(40);
                             $format->set_left(
-                                Excel::Cell->english_to_num(
+                                NG::Excel::Cell->english_to_num(
                                     $cell->border_left->get("width"),
                                     $cell->border_left->get("style")
                                 )

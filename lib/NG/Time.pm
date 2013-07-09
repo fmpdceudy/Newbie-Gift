@@ -1,12 +1,12 @@
 use NG;
-use Hashtable;
+use NG::Hashtable;
 use Time::HiRes ();
 use POSIX ();
-def_class Time => Object => ['year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond'] => {
+def_class 'NG::Time' => 'NG::Object' => ['year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
-        my $tmp = Hashtable->new($args);
+        my $tmp = NG::Hashtable->new($args);
         $self->year = $tmp->get('year') || 1970;
         $self->month = $tmp->get('month') || 1;
         $self->day = $tmp->get('day') || 1;
@@ -18,7 +18,7 @@ def_class Time => Object => ['year', 'month', 'day', 'hour', 'minute', 'second',
 
     now => sub {
         my @t = localtime;
-        my $time = Time->new(
+        my $time = NG::Time->new(
             year => $t[5] + 1900,
             month => $t[4] + 1,
             day => $t[3],
@@ -33,7 +33,7 @@ def_class Time => Object => ['year', 'month', 'day', 'hour', 'minute', 'second',
     tostr => sub {
         my ( $self, $format ) = @_;
         my @need_t;
-        if ( ref( $self ) eq 'Time' ) {
+        if ( ref( $self ) eq 'NG::Time' ) {
             @need_t = localtime( $self->to_epoch );
         } else {
             @need_t = localtime;
@@ -55,11 +55,11 @@ def_class Time => Object => ['year', 'month', 'day', 'hour', 'minute', 'second',
 
     from_epoch => sub {
         my ( $self, $args) = @_;
-        if ( ref( $self ) ne 'Time' ) {
-            $self = new Time;
+        if ( ref( $self ) ne 'NG::Time' ) {
+            $self = new NG::Time;
         }
         my @t = localtime( $args );
-        $self->build(new Hashtable(
+        $self->build(new NG::Hashtable(
             year => $t[5] + 1900,
             month => $t[4] + 1,
             day => $t[3],

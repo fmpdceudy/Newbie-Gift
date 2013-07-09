@@ -1,14 +1,14 @@
 use NG;
-use Array;
-use Hashtable;
+use NG::Array;
+use NG::Hashtable;
 
-def_class "Excel::Sheet" => Object => ['named', 'cells', 'row_count', 'col_count'] => {
+def_class 'NG::Excel::Sheet' => 'NG::Object' => ['named', 'cells', 'row_count', 'col_count'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
-        my $config = new Hashtable($args);
+        my $config = new NG::Hashtable($args);
         $self->named = $config->get('name') || 'no name';
-        $self->cells = $config->get('cells') || Array->new;
+        $self->cells = $config->get('cells') || NG::Array->new;
         $self->row_count = $config->get('row_count') || 0;
         $self->col_count = $config->get('col_count') || 0;
     },
@@ -28,10 +28,10 @@ def_class "Excel::Sheet" => Object => ['named', 'cells', 'row_count', 'col_count
         if ( $col =~ /^[A-Za-z]+$/ ) {
             $col = _letter_to_num($col);
         }
-        $self->row_count = $row if $row > $row_count;
-        $self->col_count = $col if $col > $col_count;
+        $self->row_count = $row if $row > $self->row_count;
+        $self->col_count = $col if $col > $self->col_count;
         if ( ! $self->cells->get( $row-1 )) {
-            $self->cells->set( $row-1, Array->new);
+            $self->cells->set( $row-1, NG::Array->new);
         }
         $self->cells->get( $row-1 )->set( $col-1, $cell );
         $self;
@@ -42,13 +42,13 @@ def_class "Excel::Sheet" => Object => ['named', 'cells', 'row_count', 'col_count
         if ( $col =~ /^[A-Za-z]+$/ ) {
             $col = _letter_to_num($col);
         }
-        $self->row_count = $row if $row > $row_count;
-        $self->col_count = $col if $col > $col_count;
+        $self->row_count = $row if $row > $self->row_count;
+        $self->col_count = $col if $col > $self->col_count;
         if ( ! $self->cells->get( $row-1 )) {
-            $self->cells->set( $row-1, Array->new);
+            $self->cells->set( $row-1, NG::Array->new);
         }
         if ( ! $self->cells->get( $row-1 )->get( $col-1 )) {
-            $self->cells->get( $row-1 )->set( $col-1, new Excel::Cell );
+            $self->cells->get( $row-1 )->set( $col-1, new NG::Excel::Cell );
         }
         return $self->cells->get($row-1)->get($col-1);
     },
@@ -56,7 +56,7 @@ def_class "Excel::Sheet" => Object => ['named', 'cells', 'row_count', 'col_count
 
 sub _letter_to_num {
     my $str     = shift;
-    my $letters = Array->new(split //, uc($str));
+    my $letters = NG::Array->new(split //, uc($str));
     my $res     = 0;
     for ( my $i = ( $letters->size ) - 1 ; $i >= 0 ; $i-- ) {
         $res +=

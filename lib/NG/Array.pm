@@ -1,7 +1,7 @@
 use v5.10;
 use NG;
 
-def_class Array => Object => ['data'] => {
+def_class 'NG::Array'=> 'NG::Object'=> ['data'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
@@ -19,12 +19,12 @@ def_class Array => Object => ['data'] => {
 
     read => sub {
         my ( $self, $filepath ) =@_;
-        if ( ref( $self ) eq 'Array' ) {
+        if ( ref( $self ) eq 'NG::Array' ) {
             for  ( 0 .. $self->size - 1 ) {
                 $self->pop;
             }
         } else {
-            $self = new Array;
+            $self = new NG::Array;
         }
         open my $fh, '<', $filepath or return $self;
         while ( <$fh> ) {

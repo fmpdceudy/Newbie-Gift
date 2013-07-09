@@ -1,12 +1,12 @@
 use 5.010;
 use NG;
-use Hashtable;
+use NG::Hashtable;
 
-def_class "Excel::Cell" => Object => ['valued', 'widthd', 'border_leftd', 'border_bottomd'] => {
+def_class 'NG::Excel::Cell' => 'NG::Object' => ['valued', 'widthd', 'border_leftd', 'border_bottomd'] => {
 
     build => sub {
         my ( $self, $args ) = @_;
-        my $config = new Hashtable( $args );
+        my $config = new NG::Hashtable( $args );
         $self->valued = $config->get('value') || "";
         $self->widthd = $config->get('width') || 10;
         $self->border_leftd = $config->get('border_left') ||
@@ -31,7 +31,7 @@ def_class "Excel::Cell" => Object => ['valued', 'widthd', 'border_leftd', 'borde
             $self->border_leftd = { width => $width, style => $style, color => $color };
             return $self;
         } else {
-            return new Hashtable( $self->border_leftd );
+            return new NG::Hashtable( $self->border_leftd );
         }
     },
 
@@ -41,7 +41,7 @@ def_class "Excel::Cell" => Object => ['valued', 'widthd', 'border_leftd', 'borde
             $self->border_bottomd = { width => $width, style => $style, color => $color };
             return $self;
         } else {
-            return new Hashtable( $self->border_bottomd );
+            return new NG::Hashtable( $self->border_bottomd );
         }
     },
 
