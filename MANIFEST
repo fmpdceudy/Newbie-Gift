@@ -4,11 +4,14 @@ lib/NG/Array.pm
 lib/NG/Object.pm
 lib/NG/Excel/Cell.pm
 lib/NG/Excel/Sheet.pm
+lib/NG/Log.pm
 lib/NG/Excel.pm
 lib/NG/Class.pm
 lib/NG/Time.pm
 lib/NG.pm
+t/log.t
 t/array.t
+t/log.txt
 t/hashtable.t
 t/excel.t
 t/def_class.t
