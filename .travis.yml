@@ -1,0 +1,7 @@
+language: perl
+install:
+    - cpanm Test::Deep Spreadsheet::ParseExcel Spreadsheet::WriteExcel
+perl:
+    - "5.20"
+    - "5.18"
+    - "5.14"
