@@ -1,6 +1,6 @@
 language: perl
 install:
-    - cpanm Test::Deep Spreadsheet::ParseExcel Spreadsheet::WriteExcel
+    - cpanm Test::Deep Test::Class Spreadsheet::ParseExcel Spreadsheet::WriteExcel
 perl:
     - "5.20"
     - "5.18"

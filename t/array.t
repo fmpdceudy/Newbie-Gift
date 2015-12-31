@@ -1,58 +1,118 @@
 use strict;
 use warnings FATAL => 'all';
+use base qw(Test::Class);
 use Test::More;
 use NG::Array;
 
-my $ar = NG::Array->new(10, 3, 9, 7);
+my $ar;
+my @check;
 
-ok($ar->get(0) == 10, "get");
+sub setup:Test(setup => 1) {
+    $ar = NG::Array->new(10, 3, 9, 7);
+    @check = ( 10, 3, 9, 7 );
+    isa_ok $ar, 'NG::Array';
+}
 
-$ar->sort(sub {
-        my ($a, $b) = @_;
-        return $a <=> $b;
-    });
-ok($ar->get(0) == 3, "sort");
+sub check {
+    my( $name ) = @_;
+    ok( $ar->size == scalar(@check ), $name."size" );
+    for my $i (0 ... scalar(@check)-1){
+        ok( $ar->get( $i ) eq $check[$i], $name."-".$i );
+    }
+}
 
-my $sum = 0;
-my $sumi = 0;
+sub get:Tests {
+    check( "get" );
+}
 
-$ar->each(sub {
-              my ($item, $i) = @_;
-              $sum += $item;
-              $sumi += $i;
-          });
+sub set:Tests {
+    $ar->set(3, 11 );
+    $check[3] = 11;
+    check( "set" );
+}
 
-ok($sum == 29, "each");
-ok($sumi == 6, "each index");
+sub sort:Tests {
+    $ar->sort(sub {
+            my ($a, $b) = @_;
+            return $a <=> $b;
+        });
 
-$ar->push(5);
+    @check = sort { $a <=> $b } @check;
 
-ok($ar->get(4) == 5, "push");
+    check( "sort new sub" );
 
-$ar->unshift(27);
+    $ar->sort;
+    @check = sort @check;
 
-ok($ar->get(0) == 27, "unshift");
+    check( "sort default" );
+}
 
-my $v = $ar->pop();
+sub each:Tests {
+    my $sum = 0;
+    my $sumi = 0;
 
-ok($v == 5, "pop 1");
-ok($ar->get(4) == 10, "pop 2");
+    $ar->each(sub {
+            my ($item, $i) = @_;
+            $sum += $item;
+            $sumi += $i;
+        });
 
-ok($ar->size() == 5, "size");
+    ok($sum == 29, "each");
+    ok($sumi == 6, "each index");
+}
 
-$v = $ar->shift();
-ok($v == 27, "shift 1");
-ok($ar->get(0) == 3, "shift 2");
+sub push:Tests {
+    $ar->push(5);
+    push @check,5;
+    check( "push" );
+}
 
-$ar=NG::Array->new($ar);
-ok($ar->get(0)->get(0) == 3, "init with NG::Array");
-$ar=NG::Array->new(3);
-ok($ar->get(0) == 3,"int with one value");
+sub pop:Tests {
+    my $v = $ar->pop;
+    my $c = pop @check;
+    ok($v == $c, "pop");
+    check( "pop" );
+}
 
-my $file=NG::Array->read("./t/test");
-ok($file->get(0) == 0, "read file 0");
-ok($file->get(1) == 1, "read file 1");
-ok($file->get(2) == 2, "read file 2");
-ok($file->get(3) == 3, "read file 3");
+sub unshift:Tests {
+    $ar->unshift(27);
+    unshift @check,27;
+    check( "unshift" );
 
-done_testing;
+}
+
+sub shift:Tests {
+    my $v = $ar->shift;
+    my $c = shift @check;
+    ok($v == $c, "shift");
+    check( "shift" );
+
+}
+
+sub size:Test {
+    ok( $ar->size() == scalar( @check ), "size" );
+}
+
+sub newtest:Tests {
+    $ar=NG::Array->new($ar)->get(0);
+    check( "init with NG::Array" );
+    $ar=NG::Array->new(3);
+    @check=(3);
+    check( "init with one value" );
+    $ar=NG::Array->new(3,"dd");
+    @check=(3,"dd");
+    check( "init with multi value" );
+}
+
+sub read:Tests {
+    $ar=$ar->read("./t/test");
+    @check=(0,1,2,3,4,5,6);
+    check("read by obj");
+    $ar=NG::Array->read("./t/test");
+    @check=(0,1,2,3,4,5,6);
+    check("read by class");
+    $ar=$ar->read("./t/fail");
+    @check=();
+    check("read fail");
+}
+Test::Class->runtests();
