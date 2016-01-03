@@ -1,4 +1,3 @@
-use v5.10;
 use NG;
 
 def_class 'NG::Array'=> 'NG::Object'=> ['data'] => {
@@ -6,14 +5,11 @@ def_class 'NG::Array'=> 'NG::Object'=> ['data'] => {
     build => sub {
         my ( $self, $args ) = @_;
         my @tmp = ();
-        given ( ref $args ) {
-            when ( 'ARRAY' ) {
-                @tmp = ( @$args );
-            }
-            default {
-                @tmp = ( $args );
-            }
-        };
+        if ( ref $args eq 'ARRAY' ) {
+            @tmp = ( @$args );
+        } else {
+            @tmp = ( $args );
+        }
         $self->data = \@tmp;
     },
 

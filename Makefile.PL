@@ -1,4 +1,3 @@
-use 5.010;
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
@@ -6,7 +5,6 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME               => 'NG',
     VERSION_FROM       => 'lib/NG.pm',
-    MIN_PERL_VERSION   => 5.010,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
     },

@@ -1,4 +1,3 @@
-use v5.10;
 use NG;
 use NG::Array;
 
@@ -6,22 +5,16 @@ def_class 'NG::Hashtable' => 'NG::Object' => ['data'] => {
     build => sub {
         my ( $self, $args ) = @_;
         my %tmp = ();
-        given ( ref $args ) {
-            when ( 'ARRAY' ) {
-                %tmp = ( @$args );
-            }
-            when ( 'NG::Array' ) {
-                %tmp = ( @{ $args->data} );
-            }
-            when ( 'NG::Hashtable' ) {
-                %tmp = %{ $args->data };
-            }
-            when ( 'HASH' ) {
-                %tmp = %$args;
-            }
-            default {
-            }
-        };
+        if ( ref $args eq 'ARRAY' ) {
+            %tmp = ( @$args );
+        } elsif ( ref $args eq 'NG::Array' ) {
+            %tmp = ( @{ $args->data} );
+        } elsif ( ref $args eq 'NG::Hashtable' ) {
+            %tmp = %{ $args->data };
+        } elsif ( ref $args eq 'HASH' ) {
+            %tmp = %$args;
+        } else {
+        }
         $self->data = \%tmp;
     },
     put => sub {
@@ -57,6 +50,6 @@ def_class 'NG::Hashtable' => 'NG::Object' => ['data'] => {
             }
         );
         return $self;
-      }
+    }
 };
 
