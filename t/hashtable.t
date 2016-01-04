@@ -69,4 +69,31 @@ sub newtest:Tests {
     %check = ();
     check( "init with other class" );
 }
+
+sub changeoutside:Tests {
+    %check = ( 'key2', 3, 'key3', 4 );
+
+    my @array = ( 'key2', 3, 'key3', 4 );
+    $hash = new NG::Hashtable( @array );
+    $array[1] = 4;
+    check( "ARRAY change" );
+
+    $array[1] = 3;
+
+    my $ar = new NG::Array( @array );
+    $hash = new NG::Hashtable( $ar );
+    $ar->set( 1, 3 );
+    check( "Array change" );
+
+    my $temp = new NG::Hashtable( $ar );
+    $hash = new NG::Hashtable( $temp );
+    $temp->put( "key2", "2" );
+    check( "Hashtable change" );
+
+    my %temp = %check;
+    $hash = new NG::Hashtable( %temp );
+    $temp{key2} = "2";
+    check( "HASH change" );
+
+}
 Test::Class->runtests();

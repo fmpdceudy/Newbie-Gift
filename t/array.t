@@ -104,6 +104,15 @@ sub newtest:Tests {
     check( "init with multi value" );
 }
 
+sub arraychange:Tests {
+    my @array = ( 3, 5, 7 );
+    $ar = NG::Array->new( @array );
+    @check = ( 3, 5, 7 );
+    check( "init with ARRAY" );
+    $array[2] = 5;
+    check( "ARRAY change outside" );
+}
+
 sub read:Tests {
     $ar=$ar->read("./t/test");
     @check=(0,1,2,3,4,5,6);
